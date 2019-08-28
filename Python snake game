@@ -1,0 +1,126 @@
+import turtle
+import time
+import random
+delay=0.1
+score=0
+high_score=0
+wn=turtle.Screen()
+wn.title("Hungary Snake")
+wn.tracer=(0)
+wn.setup(600,600)
+wn.bgcolor("black")
+pop=turtle.Turtle()
+pop.speed(0)
+pop.color("white")
+pop.shape("square")
+pop.penup()
+pop.direction="stop"
+food=turtle.Turtle()
+food.speed(0)
+food.shape("circle")
+food.color("red")
+food.penup()
+food.goto(0,100)
+pen=turtle.Turtle()
+pen.speed(0)
+pen.shape("square")
+pen.color("white")
+pen.hideturtle()
+pen.penup()
+pen.goto(0,250)
+pen.write("Score:0 High Score:0",align="center",font=("courier",24,"normal"))
+
+segments=[]
+def move():
+    if pop.direction == "up":
+        
+        pop.sety(pop.ycor() + 20)
+    if pop.direction == "down":
+        
+        pop.sety(pop.ycor() - 20)
+    if pop.direction == "right":
+        
+        pop.setx(pop.xcor() + 20)
+    if pop.direction == "left":
+        
+        pop.setx(pop.xcor() - 20)
+
+
+def go_up():
+    if pop.direction != "down":
+        pop.direction = "up"
+def go_down():
+    if pop.direction != "up":
+        pop.direction = "down"
+def go_right():
+    if pop.direction != "left":
+        pop.direction = "right"
+def go_left():
+    if pop.direction != "right":
+        pop.direction = "left"
+def pause():
+    pop.direction="stop"
+wn.listen()
+wn.onkeypress(go_up, "w")
+wn.onkeypress(go_down, "s")
+wn.onkeypress(go_right, "d")
+wn.onkeypress(go_left, "a")
+wn.onkeypress(pause, " ")
+
+while True:
+    wn.update()
+    if pop.xcor()>290 or pop.xcor()<-290 or pop.ycor()<-290 or pop.ycor()>290:
+        time.sleep(1)
+        pop.goto(0,0)
+        pop.direction="stop"
+        for j in segments:
+            j.goto(1000,0)
+        segments.clear()
+        score=0
+        pen.clear()
+        pen.write("Score:{} High Score:{}".format(score,high_score),align="center",font=("courier",24,"normal"))
+    
+    if pop.distance(food)<20:
+        delay-=0.001
+        x=random.randint(-290,290)
+        y=random.randint(-290,290)
+        food.goto(x,y)
+        newsegment=turtle.Turtle()
+        newsegment.speed(0)
+        newsegment.shape("square")
+        newsegment.color("blue")
+        newsegment.penup()
+        segments.append(newsegment)
+        score+=10
+        if score>high_score:
+            high_score=score
+        pen.clear()
+        pen.write("Score:{} High Score:{}".format(score,high_score),align="center",font=("courier",24,"normal"))
+    for index in range(len(segments)-1,0,-1):
+        x=segments[index-1].xcor()
+        y=segments[index-1].ycor()
+        segments[index].goto(x,y)
+    if len(segments)>0:
+        x=pop.xcor()
+        y=pop.ycor()
+        segments[0].goto(x,y)
+    move()
+    for k in segments:
+        if k.distance(pop)<20:
+            delay=0.1
+            pop.goto(0,0)
+            pop.direction="stop"
+            for l in segments:
+                l.goto(1000,0)
+            segments.clear()
+            score=0
+            pen.clear()
+            pen.write("Score:{} High Score:{}".format(score,high_score),align="center",font=("courier",24,"normal"))
+    
+    
+            
+    time.sleep(delay)
+wn.mainloop()
+
+
+
